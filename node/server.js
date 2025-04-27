@@ -1,10 +1,13 @@
 import express from 'express';
+import cors from 'cors';
 import { PrismaClient } from '@prisma/client'
 
 const prisma = new PrismaClient()
 
 const app = express();
 app.use(express.json()) // Middleware to parse JSON bodies
+app.use(cors()) // Middleware to enable CORS
+
 
 const users = []
 
@@ -41,15 +44,11 @@ app.post('/users', async (req, res) => {
     await prisma.user.create({
         data: {
             name: req.body.name,
+            age: req.body.age ? parseInt(req.body.age) : undefined,
             email: req.body.email,
-            age: req.body.age
         }
     })
-        .then(user => {
-            console.log(user);
-            res.status(201).json(user);
-        })
-
+    
     res.status(201).json(req.body);
 
 })
